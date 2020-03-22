@@ -23,12 +23,21 @@ Coming Soon.
 ## 2.00 CoreElec Common Settings
 Use the Kodi TV GUI and go to the Settings Dashboard.
 
-### 2.01 Audio Section
-Coming Soon
+## 3.00 Kodi Settings
 
-## 3.00 Install Jellyfin Addon
+## 4.00 Install Jellyfin Addon
 
-## 4.00 Install arm VNC
+## 5.00 Install VNC Addon
+
+## 6.00 Make your CoreElec Player portable - No Internet Access
+This recipe is for those who want to take their CoreElec player offsite to a remote location which has no internet access or LAN network. This works by attaching a USB3 hard disk to the CoreElec player and running RSYNC to synchronise your NAS media library locally.
+
+The prerequisites are:
+- [x] External USB3 2,5" Disk Drive
+- [x] A working build of CoreElec/LibreElec with network access
+
+
+
 
 
 #  00.00 Patches & Fixes
