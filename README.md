@@ -37,14 +37,27 @@ The prerequisites are:
 - [x] A working build of CoreElec/LibreElec with network access
 
 ### 6.01 Prepare your NAS - Type Synology
+** Install NANO from Synology Package Centre**
+
+When you only need Nano, you can install it as a SynoCommunity package. First open `Package Center` > `Settings` > `Package Sources` > `Add` :
+
+| Add | Value | Notes |
+| :---  | :---: | :--- |
+| Name | `SynoCommunity`
+| Location | `http://packages.synocommunity.com/` | 
+
+Click `OK`. 
+
+Now type in the search bar `nano` and install the nano package.
+   
 **Enable User Homes**
 
-Open `Control Panel` > `User` > `Advanced` > `User Home`
+Open `Control Panel` > `User` > `Advanced` > `User Home` and complete as follows:
 
 | User Home | Value | Note |
 | :---  | :---: | :--- |
 | Enable User home service | `☑`
-| Enable Recycle Bin | `☐`
+| Enable Recycle Bin | `☑` | *Disable if you prefer.*
 
 **Create a New User**
 
@@ -78,20 +91,36 @@ Log in to the Synology Desktop and go to `Control Panel` > `Terminal & SNMP`.
 
 Check `Enable SSH Service` and choose a non-default port. If you use the default port of 22 you'll get a security warning later.
 
+| Terminal | Value | Note |
+| :---  | :---: | :--- |
+| Enable Telnet service | `☐`
+| Enable SSH service | `☑`
+| Port | 22 | *Change if you want to increase security. Note new port number.*
+
 **Enable Public Key Authentication**
 
 Public Key Authentication is now enabled by default in the latest Synology OS version even if the settings are commented out in sshd_config. So you should be able to skip this and jump to `Generate an SSH Key`. But here are the instructions anyway.
 
-Log in to your NAS using ssh:
+1. Log in to your NAS using ssh with your `admin` user and pwd:
 
 ```
-ssh -p <port> your-nas-user@your-nas-hostname
+ssh -p <port> admin@your-nas-IP
+```
+Or easy way:
+
+```
+ssh admin@192.168.1.10
 ```
 
-Open the SSH server configuration file for editing:
+2. Open the SSH server configuration file for editing:
 
-sudo vim /etc/ssh/sshd_config
-
+```
+sed 's/#:RSAAuthentication yes;//' /etc/ssh/sshd_config
+```
+```
+sudo -i &&
+nano /etc/ssh/sshd_config
+```
 Find the following lines and uncomment them (remove the #):
 
 #RSAAuthentication yes
