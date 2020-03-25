@@ -146,9 +146,9 @@ echo
 Coming Soon.
 
 ### 6.03 Prepare CoreElec for SSH Rsync to NAS
-Now we create SSH RSA key and copy the public key (id_rsa.kodi_rsync.pub) to your NAS.
+Here we generate a SSH RSA key and copy the public key (id_rsa.pub) to your NAS.
 
-1. Log in to your CoreElec using SSH. Default user is `root` and password is `coreelec` (for libreelec the default password is `libreelec`):
+1. Log in to your CoreElec player using SSH. Default user is `root` and password is `coreelec` (for libreelec the default password is `libreelec`):
 
 ```
 ssh root@your-coreelec-IP
@@ -161,7 +161,7 @@ read -p "Please enter your NAS IPv4 address (ie 192.168.1.10) : " NAS_IP &&
 rm -rf ~/.ssh/id* &&
 echo "Generating RSA authentication keys..." &&
 ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa >/dev/null &&
-echo "Get ready to enter your NAS user kodi_rsync password..." &&
+echo "Get ready to enter your NAS user kodi_rsync password at the prompt..." &&
 cat ~/.ssh/id_rsa.pub | ssh kodi_rsync@$NAS_IP 'cat > /var/services/homes/kodi_rsync/.ssh/authorized_keys' &&
 echo &&
 echo "Now testing your SSH RSA key connection..." &&
@@ -172,7 +172,7 @@ echo "Success. RSA key authentication is working."
 fi
 ```
 
-
+### 6.04 
 
 
 
