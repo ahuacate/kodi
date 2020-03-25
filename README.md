@@ -118,7 +118,7 @@ Public Key Authentication is now enabled by default in the latest Synology OS ve
 ```
 ssh kodi_rsync@your-nas-IP
 ```
-Or if you change your SSH port (no longer port 22) type:
+Or if you change your SSH port (no longer default port 22) type:
 ```
 ssh -p <port> kodi_rsync@your-nas-IP
 ```
