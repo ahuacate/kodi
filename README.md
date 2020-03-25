@@ -37,7 +37,7 @@ The prerequisites are:
 - [x] A working build of CoreElec/LibreElec with network access
 
 ### 6.01 Prepare your NAS - Type Synology
-** Install NANO from Synology Package Centre**
+**Install NANO from Synology Package Centre**
 
 When you only need Nano, you can install it as a SynoCommunity package. First open `Package Center` > `Settings` > `Package Sources` > `Add` :
 
@@ -63,8 +63,8 @@ Open `Control Panel` > `User` > `Advanced` > `User Home` and complete as follows
 
 1. Open `Control Panel` > `User` > `Create`
 2. Set User Information as follows:
-   * Name: `kodi_sync`
-   * Description: `Medialab - Kodi to NAS SSH Sync User`
+   * Name: `kodi_rsync`
+   * Description: `Medialab - Kodi to NAS SSH Rsync User`
    * Email: `Leave blank`
    * Password: `As Supplied`
    * Confirm password: `As Supplied`
@@ -72,10 +72,21 @@ Open `Control Panel` > `User` > `Advanced` > `User Home` and complete as follows
      * Display user password in notification mail: ☐ 
      * Disallow the user to change account password:  `☑`
 3. Set Join groups as follows:
-     * medialab:  `☑`
-     * users:  `☑`
+
+| User Groups | Add | Notes |
+| :---  | :---: | :--- |
+| administrators | `☑` | *Required for testing SSH connection. After testing, toggle off for rsync only.*
+| medialab | `☑` |
+| users | `☑` | *ONLY Enable if you have no medialab group*
+
 4. Assign shared folders permissions as follows:
-     * Leave as default because all permissions are automatically obtained from the medialab user 'group' permissions.
+     * Leave as default because all permissions are automatically obtained from the medialab user 'group' permissions. But you should at least have `rsync` and 'homes' set to `read/write`.
+     
+| Assigned shared folder Permissions | Preview | Group permissions | No access | Read/Write | Read only
+| :---  | :---: | :---: | :---: | :---: | :---: |
+| homes | Read/Write | - | ☐ | `☑` | ☐ 
+| rsync | Read/Write | - | ☐ | `☑` | ☐ 
+
 5. Set User quota setting:
      * `default`
 6. Assign application permissions:
@@ -101,37 +112,87 @@ Check `Enable SSH Service` and choose a non-default port. If you use the default
 
 Public Key Authentication is now enabled by default in the latest Synology OS version even if the settings are commented out in sshd_config. So you should be able to skip this and jump to `Generate an SSH Key`. But here are the instructions anyway.
 
-1. Log in to your NAS using ssh with your `admin` user and pwd:
+1. Log in to your NAS using ssh with user `kodi_sync`:
 
 ```
-ssh -p <port> admin@your-nas-IP
+ssh -p <port> kodi_rsync@your-nas-IP
 ```
 Or easy way:
 
 ```
-ssh admin@192.168.1.10
+ssh kodi_rsync@192.168.1.10
 ```
 
 2. Open the SSH server configuration file for editing:
 
+Run the following commands in your terminal (cut & paste). You will be prompted for a password so enter user `kodi_rsync` password.
+
 ```
-sed 's/#:RSAAuthentication yes;//' /etc/ssh/sshd_config
+sudo sed -i 's|#RSAAuthentication yes|RSAAuthentication yes|g' /etc/ssh/sshd_config &&
+sudo sed -i 's|#PubkeyAuthentication yes|PubkeyAuthentication yes|g' /etc/ssh/sshd_config
+sudo sed -i 's|#AuthorizedKeysFile     .ssh/authorized_keys|AuthorizedKeysFile     .ssh/authorized_keys|g' /etc/ssh/sshd_config
 ```
+Or use nano for the manual method:
+
 ```
-sudo -i &&
-nano /etc/ssh/sshd_config
+sudo nano /etc/ssh/sshd_config
 ```
 Find the following lines and uncomment them (remove the #):
 
 #RSAAuthentication yes
 #PubkeyAuthentication yes
+#AuthorizedKeysFile     .ssh/authorized_keys
+
+3. Restart SSH service
 
 It's possible to restart the service using the following command:
 
+```
 sudo synoservicectl --reload sshd
+```
 
+4. Configure SSH for user `kodi_rsync`
+
+You need to SSH connect to your NAS.
+
+```
+mkdir /var/services/homes/kodi_rsync/.ssh &&
+chmod 700 /var/services/homes/kodi_rsync/.ssh &&
+touch /var/services/homes/kodi_rsync/.ssh/authorized_keys &&
+chmod 600 /var/services/homes/kodi_rsync/.ssh/authorized_keys &&
+chmod 700 /var/services/homes/kodi_rsync
+```
 
 ### 6.02 Prepare your NAS - Type Proxmox Ubuntu Fileserver
+Coming Soon.
+
+### 6.03 Prepare CoreElec for SSH Rsync to NAS
+Now we create SSH RSA key and copy the public key (id_rsa.kodi_rsync.pub) to your NAS.
+
+1. Log in to your CoreElec using SSH. Default user is `root` and password is `coreelec` (for libreelec the default password is `libreelec`):
+
+```
+ssh root@your-coreelec-IP
+```
+
+2. Run the following commands (copy & paste) in corelec. You will need to enter your NAS user 'kodi_rsync` password to complete the task.
+
+```
+read -p "Please enter your NAS IPv4 address (ie 192.168.1.10) : " NAS_IP &&
+rm -rf ~/.ssh/id* &&
+echo "Generating RSA authentication keys..." &&
+ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa >/dev/null &&
+echo "Get ready to enter your NAS user kodi_rsync password..." &&
+cat ~/.ssh/id_rsa.pub | ssh kodi_rsync@$NAS_IP 'cat > /var/services/homes/kodi_rsync/.ssh/authorized_keys' &&
+echo &&
+echo "Now testing your SSH RSA key connection..." &&
+ssh -q kodi_rsync@192.168.1.11 exit &&
+if [ "$(echo $?)" = 0 ]; then
+echo
+echo "Success. RSA key authentication is working."
+fi
+```
+
 
 
 
