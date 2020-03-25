@@ -30,11 +30,12 @@ Use the Kodi TV GUI and go to the Settings Dashboard.
 ## 5.00 Install VNC Addon
 
 ## 6.00 Make your CoreElec Player portable - No Internet Access
-This recipe is for those who want to take their CoreElec player offsite to a remote location which has no internet access or LAN network. This works by attaching a USB3 hard disk to the CoreElec player and running RSYNC to synchronise your NAS media library locally.
+This recipe is for those who want to take their CoreElec player offsite to a remote location which has no internet access or LAN network. This works by attaching a USB3 hard disk to the CoreElec player and running RSYNC to synchronise your NAS media library to the local USB3 hard disk.
 
 The prerequisites are:
 - [x] External USB3 2,5" Disk Drive
 - [x] A working build of CoreElec/LibreElec with network access
+- [x] A running NAS
 
 ### 6.01 Prepare your NAS - Type Synology
 **Install NANO from Synology Package Centre**
@@ -112,55 +113,33 @@ Check `Enable SSH Service` and choose a non-default port. If you use the default
 
 Public Key Authentication is now enabled by default in the latest Synology OS version even if the settings are commented out in sshd_config. So you should be able to skip this and jump to `Generate an SSH Key`. But here are the instructions anyway.
 
-1. Log in to your NAS using ssh with user `kodi_sync`:
+1. Log in to your NAS using SSH with user `kodi_rsync`:
 
+```
+ssh kodi_rsync@your-nas-IP
+```
+Or if you change your SSH port (no longer port 22) type:
 ```
 ssh -p <port> kodi_rsync@your-nas-IP
 ```
-Or easy way:
+
+2. Run the following commands (copy & paste) in your terminal window. You will be prompted for a password so enter user `kodi_rsync` password:
 
 ```
-ssh kodi_rsync@192.168.1.10
-```
-
-2. Open the SSH server configuration file for editing:
-
-Run the following commands in your terminal (cut & paste). You will be prompted for a password so enter user `kodi_rsync` password.
-
-```
+echo "Editing SSH server configuration file..." &&
 sudo sed -i 's|#RSAAuthentication yes|RSAAuthentication yes|g' /etc/ssh/sshd_config &&
-sudo sed -i 's|#PubkeyAuthentication yes|PubkeyAuthentication yes|g' /etc/ssh/sshd_config
-sudo sed -i 's|#AuthorizedKeysFile     .ssh/authorized_keys|AuthorizedKeysFile     .ssh/authorized_keys|g' /etc/ssh/sshd_config
-```
-Or use nano for the manual method:
-
-```
-sudo nano /etc/ssh/sshd_config
-```
-Find the following lines and uncomment them (remove the #):
-
-#RSAAuthentication yes
-#PubkeyAuthentication yes
-#AuthorizedKeysFile     .ssh/authorized_keys
-
-3. Restart SSH service
-
-It's possible to restart the service using the following command:
-
-```
-sudo synoservicectl --reload sshd
-```
-
-4. Configure SSH for user `kodi_rsync`
-
-You need to SSH connect to your NAS.
-
-```
+sudo sed -i 's|#PubkeyAuthentication yes|PubkeyAuthentication yes|g' /etc/ssh/sshd_config &&
+sudo sed -i 's|#AuthorizedKeysFile     .ssh/authorized_keys|AuthorizedKeysFile     .ssh/authorized_keys|g' /etc/ssh/sshd_config &&
+echo "Creating authorised keys folders for user kodi_rsync..." &&
 mkdir /var/services/homes/kodi_rsync/.ssh &&
 chmod 700 /var/services/homes/kodi_rsync/.ssh &&
 touch /var/services/homes/kodi_rsync/.ssh/authorized_keys &&
 chmod 600 /var/services/homes/kodi_rsync/.ssh/authorized_keys &&
-chmod 700 /var/services/homes/kodi_rsync
+chmod 700 /var/services/homes/kodi_rsync &&
+echo "Restarting SSH service..." &&
+sudo synoservicectl --reload sshd &&
+echo "Success. Finished script." &&
+echo
 ```
 
 ### 6.02 Prepare your NAS - Type Proxmox Ubuntu Fileserver
@@ -186,7 +165,7 @@ echo "Get ready to enter your NAS user kodi_rsync password..." &&
 cat ~/.ssh/id_rsa.pub | ssh kodi_rsync@$NAS_IP 'cat > /var/services/homes/kodi_rsync/.ssh/authorized_keys' &&
 echo &&
 echo "Now testing your SSH RSA key connection..." &&
-ssh -q kodi_rsync@192.168.1.11 exit &&
+ssh -q kodi_rsync@NAS_IP exit &&
 if [ "$(echo $?)" = 0 ]; then
 echo
 echo "Success. RSA key authentication is working."
