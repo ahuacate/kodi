@@ -19,6 +19,8 @@ MOUNT_CHECK=$(df | grep -q '/var/media/remote' > /dev/null; echo $?)
 
 ################################################################
 
+# Download external scripts
+#wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_kodi_rsync_script.sh
 
 if [ "$NAS_LINK" == 0 ] && [ "$NAS_PING" == 0 ] && [ "$MOUNT_CHECK" == 0 ]; then
   echo "NAS is up"
