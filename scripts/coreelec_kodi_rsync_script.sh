@@ -2,7 +2,7 @@
 
 #####################VARIABLES DEFINED##########################
 
-NAS_IP="192.168.1.11"
+NAS_IP="192.168.1.10"
 
 LOGFILE=/var/media/remote/logs/kodi_rsync_daily.log
 LOGFILE_ERRORS=/var/media/remote/logs/kodi_rsync_errors.log
