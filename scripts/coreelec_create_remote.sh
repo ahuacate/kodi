@@ -47,6 +47,7 @@ wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_
 
 
 ##################### SETTING USB HARD DISK ##########################
+clear
 echo
 echo
 echo
@@ -399,6 +400,7 @@ echo
 
 
 # Setting up New Kodi Profile Names
+msg "Create a new local disk Kodi user profile... "
 read -p "Do you want to create a new Kodi user profile to use the new hard disk [yes/no]? " -r
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Yes" ]]; then
 info "You have chosen to create a new Kodi user profile."
