@@ -475,8 +475,9 @@ systemctl start kodi
 sleep 2
 echo
 else
-info "You have chosen to manually create a local profile at your Kodi player station."
+info "Skipping setting up a local Kodi profile. You can manually create a local profile at your Kodi player station."
 fi
+echo
 
 
 # Manually Run Rsync Script
@@ -488,6 +489,7 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Ye
 else
   info "Skipping running Rsync now."
 fi
+echo
 
 
 # Success
