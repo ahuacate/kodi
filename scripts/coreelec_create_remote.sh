@@ -44,6 +44,7 @@ wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_
 
 # Command to run script
 # wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_create_remote.sh -O coreelec_create_remote.sh; chmod +x coreelec_create_remote.sh; ./coreelec_create_remote.sh
+# dd if=/dev/zero of=/dev/sda bs=512 count=1 conv=notrunc # Wipe USB disk - CHECK /dev/sdX
 
 
 ##################### SETTING USB HARD DISK ##########################
