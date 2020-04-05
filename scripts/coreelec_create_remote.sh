@@ -47,8 +47,9 @@ wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_
 
 
 ##################### SETTING USB HARD DISK ##########################
-
-
+echo
+echo
+echo
 # Select storage location
 msg "Detecting USB storage devices..."
 STORAGE_LIST="$(ls /dev/disk/by-id/usb* | sed 's/.*usb-\(.*\)-[0-9]:.*/\1/' | awk '!seen[$0]++' | wc -l)" &&
@@ -91,9 +92,9 @@ echo
 msg "Checking the selected disk format (i.e ext3/ext4)..."
 MOUNT_POINT="/var/media/remote"
 SELECTED_DEVICE="$(readlink -f /dev/disk/by-id/usb-$(cat usb_disk_select)-0:0)"
-FORMAT_TYPE="$(blkid -s TYPE $(readlink -f /dev/disk/by-id/usb-$(cat usb_disk_select)-0:0) | awk '{ print $2 }' | awk -F'"' '$0=$2')" &&
+FORMAT_TYPE="$(blkid -s TYPE $(readlink -f /dev/disk/by-id/usb-$(cat usb_disk_select)-0:0) | awk '{ print $2 }' | awk -F'"' '$0=$2')"
 if [ "$(echo $FORMAT_TYPE)" == "ext3" ] || [ "$(echo $FORMAT_TYPE)" == "ext4" ]; then
-info "Existing disk format is okay: $FORMAT_TYPE"
+  info "Existing disk format is okay: $FORMAT_TYPE"
 else
   echo
   info "Your USB storage disk requires formatting to Linux ext4 filesystem"
