@@ -132,7 +132,7 @@ fi
 msg "Calculating the available disk space for media..."
 DISK_FACTOR=95
 info "Maximum disk storage is set at $DISK_FACTOR% of total disk storage capacity."
-DISK_CAP_BYTES=$(SELECTED_DEVICE_MAX=$(df -P $SELECTED_DEVICE | awk 'NR==2 {print $2}') VAR=$DISK_FACTOR busybox sh -c 'echo "$(( SELECTED_DEVICE_MAX * VAR / 100 ))"')
+DISK_CAP_BYTES=$(SELECTED_DEVICE_MAX=$(df -P $SELECTED_DEVICE | awk 'NR==2 {print $2}') VAR=$DISK_FACTOR busybox sh -c 'echo "$(( SELECTED_DEVICE_MAX * 1000 * VAR / 100 ))"')
 echo
 
 
