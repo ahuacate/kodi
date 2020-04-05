@@ -1,4 +1,4 @@
-#/bin/ash
+#/bin/bash
 
 # Colour
 RED=$'\033[0;31m'
