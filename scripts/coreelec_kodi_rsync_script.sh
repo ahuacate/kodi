@@ -1,8 +1,20 @@
-#!/bin/sh
+#!/bin/bash
 
 #####################VARIABLES DEFINED##########################
 
-NAS_IP="192.168.1.10"
+NAS_TYPE=""
+
+NAS_IP="192.168.1.11"
+
+DISK_CAP="100000" # Hard Disk Storage Capacity Limit in Bytes
+
+USER_BASE_DIR="~"
+SOURCE_BASE_DIR="/volume1"
+
+SOURCE_DIR="/volume1/music /volume1/photo /volume1/video/movies /volume1/video/tv"
+DESTINATION_DIR="/var/media/remote/"
+
+INPUT_LIST="/var/media/remote/logs/rsync_input.list.txt"
 
 LOGFILE=/var/media/remote/logs/kodi_rsync_daily.log
 LOGFILE_ERRORS=/var/media/remote/logs/kodi_rsync_errors.log
@@ -20,13 +32,15 @@ MOUNT_CHECK=$(df | grep -q '/var/media/remote' > /dev/null; echo $?)
 ################################################################
 
 # Download external scripts
-#wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_kodi_rsync_script.sh -P ~/backup/scripts
+#wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_kodi_rsync_script.sh -O /storage/.config/scripts/coreelec_kodi_rsync_script.sh
+
 
 if [ "$NAS_LINK" == 0 ] && [ "$NAS_PING" == 0 ] && [ "$MOUNT_CHECK" == 0 ]; then
   echo "NAS is up"
-  mkdir -p /var/media/remote/logs
+  mkdir -p "$DESTINATION_DIR"logs
   echo "==================================" >> $LOGFILE
-  rsync -avuz --delete --exclude '*.partial~' --delete-excluded --log-file=$LOGFILE kodi_rsync@$NAS_IP:/volume1/rsync/ /var/media/remote/music 2> $LOGFILE_ERRORS
+  ssh kodi_rsync@$NAS_IP "find $SOURCE_DIR ! -name "*.partial~" -type f -printf '%T@:%p:%s\n'" | egrep -v "@eaDir" | sort -n -r | awk -F":" '{ i+=$3; if (i<=$DISK_CAP) {print $2}}' > $INPUT_LIST
+  rsync -avuz --delete --inplace --exclude '*.partial~' --delete-excluded --log-file=$LOGFILE --files-from=$INPUT_LIST --relative kodi_rsync@$NAS_IP:$USER_BASE_DIR $DESTINATION_DIR 2> $LOGFILE_ERRORS
   echo "==================================" >> $LOGFILE
 else
   if [ $NAS_LINK -ne 0 ];then
@@ -39,7 +53,12 @@ else
     echo "###################################" >> $LOGFILE_ERRORS
   elif [ $MOUNT_CHECK -ne 0 ];then
     echo "############# WARNING #############" >> $LOGFILE_ERRORS
-    echo "Remote disk is not connected. Aborted: $(date)." >> $LOGFILE_ERRORS
+    echo "Remote USB disk is not connected. Aborted: $(date)." >> $LOGFILE_ERRORS
     echo "###################################" >> $LOGFILE_ERRORS
   fi
 fi
+
+
+##In Progress Work
+# ssh kodi_rsync@$NAS_IP "find $SOURCE_DIR ! -name "*.partial~" -type f -printf '%T@:%p:%s\n'" | egrep -v "@eaDir" | sort -n -r | awk -F":" '{ i+=$3; if (i<=$DISK_CAP) {print $2}}' > $INPUT_LIST
+# rsync -avuz --delete --inplace --exclude '*.partial~' --delete-excluded --log-file=$LOGFILE --files-from=/var/media/remote/logs/rsync_input.list.txt --relative kodi_rsync@$NAS_IP:$BASE_DIR $DESTINATION_DIR 2> $LOGFILE_ERRORS
