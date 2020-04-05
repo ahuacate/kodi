@@ -478,7 +478,13 @@ fi
 
 # Manually Run Rsync Script
 msg "Option to run Rsync manually (now)..."
-
+read -p "Do you want to run the Rsync script now [yes/no]? " -r
+if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Yes" ]]; then
+  info "${GREEN}Starting Rsync now.${NC}"
+  ./storage/.config/scripts/coreelec_kodi_rsync_script.sh
+else
+  info "Skipping rinning Rsync now."
+fi
 
 
 # Success
