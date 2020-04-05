@@ -2,16 +2,16 @@
 
 #####################VARIABLES DEFINED##########################
 
-NAS_TYPE=""
+NAS_TYPE="<insert here>"
 
-NAS_IP="192.168.1.11"
+NAS_IP="<insert here>"
 
-DISK_CAP="100000" # Hard Disk Storage Capacity Limit in Bytes
+DISK_CAP="<insert here>" # Hard Disk Storage Capacity Limit in Bytes
 
-USER_BASE_DIR="~"
-SOURCE_BASE_DIR="/volume1"
+USER_BASE_DIR="<insert here>"
+SOURCE_BASE_DIR="<insert here>"
 
-SOURCE_DIR="/volume1/music /volume1/photo /volume1/video/movies /volume1/video/tv"
+SOURCE_DIR="<insert here>"
 DESTINATION_DIR="/var/media/remote/"
 
 INPUT_LIST="/var/media/remote/logs/rsync_input.list.txt"
