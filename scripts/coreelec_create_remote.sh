@@ -391,7 +391,7 @@ echo
 msg "Setting script variables..."
 sed -i 's/NAS_TYPE=.*/NAS_TYPE="'$NAS_TYPE'"/g' /storage/.config/scripts/coreelec_kodi_rsync_script.sh
 sed -i 's/NAS_IP=.*/NAS_IP="'$NAS_IP'"/g' /storage/.config/scripts/coreelec_kodi_rsync_script.sh
-sed -i 's/DISK_CAP=.*/DISK_CAP="'$DISK_CAP_BYTES'"/g' /storage/.config/scripts/coreelec_kodi_rsync_script.sh
+sed -i 's/DISK_CAP_BYTES/'$DISK_CAP_BYTES'/g' /storage/.config/scripts/coreelec_kodi_rsync_script.sh
 sed -i 's|USER_BASE_DIR=.*|USER_BASE_DIR="'$USER_BASE_DIR'"|g' /storage/.config/scripts/coreelec_kodi_rsync_script.sh
 sed -i 's|SOURCE_BASE_DIR=.*|SOURCE_BASE_DIR="'$SOURCE_BASE_DIR'"|g' /storage/.config/scripts/coreelec_kodi_rsync_script.sh
 sed -i "s#SOURCE_DIR=.*#SOURCE_DIR=\"$(cat media_sources_input | awk '{print}' ORS=' ' | sed 's/ *$//')\"#g" /storage/.config/scripts/coreelec_kodi_rsync_script.sh
@@ -481,9 +481,9 @@ msg "Option to run Rsync manually (now)..."
 read -p "Do you want to run the Rsync script now [yes/no]? " -r
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Yes" ]]; then
   info "${GREEN}Starting Rsync now.${NC}"
-  ./storage/.config/scripts/coreelec_kodi_rsync_script.sh
+  sh /storage/.config/scripts/coreelec_kodi_rsync_script.sh
 else
-  info "Skipping rinning Rsync now."
+  info "Skipping running Rsync now."
 fi
 
 
