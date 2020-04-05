@@ -218,7 +218,7 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Ye
 while true
   read -p "Type the $NAS_TYPE folder name which contains all your TV shows (i.e TV or TVShows): " TV_DIR_CHECK
   do
-  echo "Validating this folder exists: ${YELLOW}$TV_DIR_CHECK${NC} ..."
+  echo "Checking if this folder exists: ${YELLOW}$TV_DIR_CHECK${NC} ..."
   if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$TV_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
     TV_DIR_CHECK2=$(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$TV_DIR_CHECK" 2>/dev/null" | egrep -v "@")
 	echo "$TV_DIR_CHECK" >> media_sources_search
@@ -252,7 +252,7 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Ye
 while true
   read -p "Type the $NAS_TYPE folder name which contains all your Movies (i.e Movies or Movie): " MOVIE_DIR_CHECK
   do
-  echo "Validating this folder exists: ${YELLOW}$MOVIE_DIR_CHECK${NC} ..."
+  echo "Checking if this folder exists: ${YELLOW}$MOVIE_DIR_CHECK${NC} ..."
   if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MOVIE_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
     MOVIE_DIR_CHECK2=$(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MOVIE_DIR_CHECK" 2>/dev/null" | egrep -v "@")
 	echo "$MOVIE_DIR_CHECK" >> media_sources_search
@@ -286,7 +286,7 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Ye
 while true
   read -p "Type the $NAS_TYPE folder name which contains all your Music (i.e Music): " MUSIC_DIR_CHECK
   do
-  echo "Validating this folder exists: ${YELLOW}$MUSIC_DIR_CHECK${NC} ..."
+  echo "Checking if this folder exists: ${YELLOW}$MUSIC_DIR_CHECK${NC} ..."
   if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MUSIC_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
     MUSIC_DIR_CHECK2=$(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MUSIC_DIR_CHECK" 2>/dev/null" | egrep -v "@")
 	echo "$MUSIC_DIR_CHECK" >> media_sources_search
@@ -320,7 +320,7 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Ye
 while true
   read -p "Type the $NAS_TYPE folder name which contains all your Photos (i.e Photo or Photos): " PHOTO_DIR_CHECK
   do
-  echo "Validating this folder exists: ${YELLOW}$PHOTO_DIR_CHECK${NC} ..."
+  echo "Checking if this folder exists: ${YELLOW}$PHOTO_DIR_CHECK${NC} ..."
   if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$PHOTO_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
     PHOTO_DIR_CHECK2=$(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$PHOTO_DIR_CHECK" 2>/dev/null" | egrep -v "@")
 	echo "$PHOTO_DIR_CHECK" >> media_sources_search
