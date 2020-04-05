@@ -13,8 +13,6 @@ NAS_TYPE="<insert here>"
 
 NAS_IP="<insert here>"
 
-DISK_CAP="<insert here>" # Hard Disk Storage Capacity Limit in Bytes
-
 USER_BASE_DIR="<insert here>"
 SOURCE_BASE_DIR="<insert here>"
 
@@ -46,7 +44,7 @@ if [ "$NAS_LINK" == 0 ] && [ "$NAS_PING" == 0 ] && [ "$MOUNT_CHECK" == 0 ]; then
   echo "NAS is up"
   mkdir -p "$DESTINATION_DIR"logs
   echo "==================================" >> $LOGFILE
-  ssh kodi_rsync@$NAS_IP "find $SOURCE_DIR ! -name "*.partial~" -type f -printf '%T@:%p:%s\n'" | egrep -v "@eaDir" | sort -n -r | awk -F":" '{ i+=$3; if (i<=$DISK_CAP) {print $2}}' > $INPUT_LIST
+  ssh kodi_rsync@$NAS_IP "find $SOURCE_DIR ! -name "*.partial~" -type f -printf '%T@:%p:%s\n'" | egrep -v "@eaDir" | sort -n -r | awk -F":" '{ i+=$3; if (i<=DISK_CAP_BYTES) {print $2}}' > $INPUT_LIST
   rsync -avuz --delete --inplace --exclude '*.partial~' --delete-excluded --log-file=$LOGFILE --files-from=$INPUT_LIST --relative kodi_rsync@$NAS_IP:$USER_BASE_DIR $DESTINATION_DIR 2> $LOGFILE_ERRORS
   echo "==================================" >> $LOGFILE
 else
