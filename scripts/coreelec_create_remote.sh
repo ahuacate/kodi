@@ -43,7 +43,7 @@ wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_
 #################################################################################
 
 # Command to run script
-# bash -c "$(wget -qLO - https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_create_remote.sh)"
+# wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_create_remote.sh -O coreelec_create_remote.sh; chmod +x coreelec_create_remote.sh; ./coreelec_create_remote.sh
 
 
 ##################### SETTING USB HARD DISK ##########################
