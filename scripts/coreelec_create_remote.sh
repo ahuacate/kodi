@@ -38,8 +38,8 @@ wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_
 
 #################################################################################
 # This script is for setting up a CoreElec player with a local USB Hard Disk	#
-#                                                                 				#
-# Tested on : CoreELEC (official): 9.2.1 (Amlogic-ng.arm)						#
+#                                                                               #
+# Tested on : CoreELEC (official): 9.2.1 (Amlogic-ng.arm)                       #
 #################################################################################
 
 # Command to run script
