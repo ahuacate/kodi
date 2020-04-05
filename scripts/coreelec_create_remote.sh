@@ -376,6 +376,7 @@ echo
 
 # Set Scheduled Cron Tasks
 msg "Setting crontab to run the Rsync at 01:00hr daily..."
+crontab -u root -l | grep -v 'sh /storage/.config/scripts/coreelec_kodi_rsync_script.sh' | crontab -u root - # Remove any previous coreelec_kodi_rsync_script cron tasks
 crontab -l > kodi_rsync # write out crontab
 echo "0 1 * * * sh /storage/.config/scripts/coreelec_kodi_rsync_script.sh" >> kodi_rsync # echo new cron into cron file
 crontab kodi_rsync # install new cron file
