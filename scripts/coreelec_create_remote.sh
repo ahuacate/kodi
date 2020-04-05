@@ -44,7 +44,7 @@ wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_
 
 # Command to run script
 # wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_create_remote.sh -O coreelec_create_remote.sh; chmod +x coreelec_create_remote.sh; ./coreelec_create_remote.sh
-# dd if=/dev/zero of=/dev/sda bs=512 count=1 conv=notrunc # Wipe USB disk - CHECK /dev/sdX
+# systemctl stop nmbd smbd; umount -l /dev/sda >/dev/null; dd if=/dev/zero of=/dev/sda bs=512 count=1 conv=notrunc; mkfs.ext4 -L remote /dev/sda; mount /dev/sda /var/media/remote; systemctl restart nmbd smbd # Wipe USB disk - CHECK /dev/sdX
 
 
 ##################### SETTING USB HARD DISK ##########################
@@ -112,6 +112,7 @@ fi
 
 if [[ $format_run == "y" || $format_run == "Y" || $format_run == "yes" || $format_run == "Yes" ]]; then
 msg "Preparing to format the selected disk to ext4 filesystem..."
+systemctl stop nmbd smbd
 umount $SELECTED_DEVICE >/dev/null
 msg "Erasing the selected disk..."
 dd if=/dev/zero of=$SELECTED_DEVICE bs=512 count=1 conv=notrunc >/dev/null
@@ -123,6 +124,7 @@ rm -rf $MOUNT_POINT
 mkdir $MOUNT_POINT
 msg "Mounting the selected disk at /var/media/remote..."
 mount $SELECTED_DEVICE $MOUNT_POINT
+systemctl restart nmbd smbd
 echo
 info "Success. You have created a ${YELLOW}$(df -h $SELECTED_DEVICE | awk 'FNR == 2 { print $2 }')${NC} storage disk. \nYour new is storage disk is ${YELLOW}remote${NC}."
 echo
