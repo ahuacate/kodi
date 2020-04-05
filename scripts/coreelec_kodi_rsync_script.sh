@@ -1,4 +1,11 @@
-#!/bin/bash
+#!/bin/ash
+
+################################################################
+# This script is to Rsync a CoreElec host                      #
+# local USB Hard Disk with a NAS.                              #
+#                                                              #
+# Tested on : CoreELEC (official): 9.2.1 (Amlogic-ng.arm)      #
+################################################################
 
 #####################VARIABLES DEFINED##########################
 
