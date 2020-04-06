@@ -231,26 +231,27 @@ while true
   do
   echo "Checking if this folder exists: ${YELLOW}$TV_DIR_CHECK${NC} ..."
   if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$TV_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
-    TV_DIR_CHECK2=$(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$TV_DIR_CHECK" 2>/dev/null" | egrep -v "@")
-	echo "$TV_DIR_CHECK" >> media_sources_search
-    read -p "Confirm the following path is correct for your TV Shows folder: ${YELLOW}$TV_DIR_CHECK2${NC} [yes/no]?: " -r
-	if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Yes" ]]; then
-      TV_DIR=$(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$TV_DIR_CHECK" 2>/dev/null" | egrep -v "@")
-	  echo "$TV_DIR" >> media_sources_input
-      info "TV Show folder is set as: ${YELLOW}$TV_DIR${NC}"
+    ssh kodi_rsync@$NAS_IP "find / -type d -iname "$TV_DIR_CHECK" 2>/dev/null" | egrep -v "@" > tv_sources_search
+    while read line <&3
+    do
+    read -p "Confirm the following path is correct for your TV Shows folder: ${YELLOW}$line${NC} [yes/no]?: " -r
+    if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Yes" ]]; then 
+      info "TV Show folder is set as: ${YELLOW}$line${NC}"
+	  echo "$line" >> media_sources_input
 	  TV_DIR_SYNC=0 # Setting variable so not to list any like folders
-	  break
-	elif [[ "$REPLY" == "n" || "$REPLY" == "N" || "$REPLY" == "no" || "$REPLY" == "No" ]]; then
-	  warn "If we cannot find it, we cannot add it! Sorry. Moving on."
-	  break
-	fi
+    else
+      info "Ignoring path $line."
+    echo
+    fi
+    done 3< "tv_sources_search"
+	break
   else
-    warn "Folder $TV_DIR_CHECK does not exits OR is not reachable by user kodi_rsync.
+    warn "Folder $TV_DIR_CHECK does not exist OR is not reachable by user kodi_rsync.
 Please check your $NAS_TYPE TV Show folder name and kodi_rsync user permissions.
 Trying again."
     echo
   fi
-done
+done  
 else
 TV_DIR_SYNC=1 # Setting variable so not to list any like folders
 info "You have chosen NOT to synchronise any TV Shows. Skipping this step."
@@ -258,33 +259,34 @@ fi
 echo
 
 info "Setting up your Movies folder."
-read -p "Do you want to synchronise your $NAS_TYPE Movies folder [yes/no]? " -r
+read -p "Do you want to synchronise your $NAS_TYPE Movie folder [yes/no]? " -r
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Yes" ]]; then
 while true
-  read -p "Type the $NAS_TYPE folder name which contains all your Movies (i.e Movies or Movie): " MOVIE_DIR_CHECK
+  read -p "Type the $NAS_TYPE folder name which contains all your Movies (i.e movies or cinema): " MOVIE_DIR_CHECK
   do
   echo "Checking if this folder exists: ${YELLOW}$MOVIE_DIR_CHECK${NC} ..."
   if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MOVIE_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
-    MOVIE_DIR_CHECK2=$(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MOVIE_DIR_CHECK" 2>/dev/null" | egrep -v "@")
-	echo "$MOVIE_DIR_CHECK" >> media_sources_search
-    read -p "Confirm the following path is correct for your Movies folder: ${YELLOW}$MOVIE_DIR_CHECK2${NC} [yes/no]?: " -r
-	if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Yes" ]]; then
-      MOVIE_DIR=$(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MOVIE_DIR_CHECK" 2>/dev/null" | egrep -v "@")
-	  echo "$MOVIE_DIR" >> media_sources_input
-      info "Movies folder is set as: ${YELLOW}$MOVIE_DIR${NC}"
+    ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MOVIE_DIR_CHECK" 2>/dev/null" | egrep -v "@" > movie_sources_search
+    while read line <&3
+    do
+    read -p "Confirm the following path is correct for your Movie folder: ${YELLOW}$line${NC} [yes/no]?: " -r
+    if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Yes" ]]; then 
+      info "Movies folder is set as: ${YELLOW}$line${NC}"
+	  echo "$line" >> media_sources_input
 	  MOVIE_DIR_SYNC=0 # Setting variable so not to list any like folders
-	  break
-	elif [[ "$REPLY" == "n" || "$REPLY" == "N" || "$REPLY" == "no" || "$REPLY" == "No" ]]; then
-	  warn "If we cannot find it, we cannot add it! Sorry. Moving on."
-	  break
-	fi
+    else
+      info "Ignoring path $line."
+    echo
+    fi
+    done 3< "movie_sources_search"
+	break
   else
-    warn "Folder $MOVIE_DIR_CHECK does not exits OR is not reachable by user kodi_rsync.
-Please check your $NAS_TYPE Movies folder name and kodi_rsync user permissions.
+    warn "Folder $MOVIE_DIR_CHECK does not exist OR is not reachable by user kodi_rsync.
+Please check your $NAS_TYPE Movie folder name and kodi_rsync user permissions.
 Trying again."
     echo
   fi
-done
+done  
 else
 MOVIE_DIR_SYNC=1 # Setting variable so not to list any like folders
 info "You have chosen NOT to synchronise any Movies. Skipping this step."
@@ -295,30 +297,31 @@ info "Setting up your Music folder."
 read -p "Do you want to synchronise your $NAS_TYPE Music folder [yes/no]? " -r
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Yes" ]]; then
 while true
-  read -p "Type the $NAS_TYPE folder name which contains all your Music (i.e Music): " MUSIC_DIR_CHECK
+  read -p "Type the $NAS_TYPE folder name which contains all your Music (i.e music): " MUSIC_DIR_CHECK
   do
   echo "Checking if this folder exists: ${YELLOW}$MUSIC_DIR_CHECK${NC} ..."
   if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MUSIC_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
-    MUSIC_DIR_CHECK2=$(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MUSIC_DIR_CHECK" 2>/dev/null" | egrep -v "@")
-	echo "$MUSIC_DIR_CHECK" >> media_sources_search
-    read -p "Confirm the following path is correct for your Music folder: ${YELLOW}$MUSIC_DIR_CHECK2${NC} [yes/no]?: " -r
-	if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Yes" ]]; then
-      MUSIC_DIR=$(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MUSIC_DIR_CHECK" 2>/dev/null" | egrep -v "@")
-	  echo "$MUSIC_DIR" >> media_sources_input
-      info "Music folder is set as: ${YELLOW}$MUSIC_DIR${NC}"
+    ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MUSIC_DIR_CHECK" 2>/dev/null" | egrep -v "@" > music_sources_search
+    while read line <&3
+    do
+    read -p "Confirm the following path is correct for your Music folder: ${YELLOW}$line${NC} [yes/no]?: " -r
+    if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Yes" ]]; then 
+      info "Music folder is set as: ${YELLOW}$line${NC}"
+	  echo "$line" >> media_sources_input
 	  MUSIC_DIR_SYNC=0 # Setting variable so not to list any like folders
-	  break
-	elif [[ "$REPLY" == "n" || "$REPLY" == "N" || "$REPLY" == "no" || "$REPLY" == "No" ]]; then
-	  warn "If we cannot find it, we cannot add it! Sorry. Moving on."
-	  break
-	fi
+    else
+      info "Ignoring path $line."
+    echo
+    fi
+    done 3< "music_sources_search"
+	break
   else
-    warn "Folder $MUSIC_DIR_CHECK does not exits OR is not reachable by user kodi_rsync.
+    warn "Folder $MUSIC_DIR_CHECK does not exist OR is not reachable by user kodi_rsync.
 Please check your $NAS_TYPE Music folder name and kodi_rsync user permissions.
 Trying again."
     echo
   fi
-done
+done  
 else
 MUSIC_DIR_SYNC=1 # Setting variable so not to list any like folders
 info "You have chosen NOT to synchronise any Music. Skipping this step."
@@ -329,30 +332,31 @@ info "Setting up your Photo folder."
 read -p "Do you want to synchronise your $NAS_TYPE Photo folder [yes/no]? " -r
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Yes" ]]; then
 while true
-  read -p "Type the $NAS_TYPE folder name which contains all your Photos (i.e Photo or Photos): " PHOTO_DIR_CHECK
+  read -p "Type the $NAS_TYPE folder name which contains all your Photos (i.e music): " PHOTO_DIR_CHECK
   do
   echo "Checking if this folder exists: ${YELLOW}$PHOTO_DIR_CHECK${NC} ..."
   if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$PHOTO_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
-    PHOTO_DIR_CHECK2=$(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$PHOTO_DIR_CHECK" 2>/dev/null" | egrep -v "@")
-	echo "$PHOTO_DIR_CHECK" >> media_sources_search
-    read -p "Confirm the following path is correct for your Photo folder: ${YELLOW}$PHOTO_DIR_CHECK2${NC} [yes/no]?: " -r
-	if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Yes" ]]; then
-      PHOTO_DIR=$(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$PHOTO_DIR_CHECK" 2>/dev/null" | egrep -v "@")
-	  echo "$PHOTO_DIR" >> media_sources_input
-      info "Photo folder is set as: ${YELLOW}$PHOTO_DIR${NC}"
+    ssh kodi_rsync@$NAS_IP "find / -type d -iname "$PHOTO_DIR_CHECK" 2>/dev/null" | egrep -v "@" > photo_sources_search
+    while read line <&3
+    do
+    read -p "Confirm the following path is correct for your Photo folder: ${YELLOW}$line${NC} [yes/no]?: " -r
+    if [[ "$REPLY" == "y" || "$REPLY" == "Y" || "$REPLY" == "yes" || "$REPLY" == "Yes" ]]; then 
+      info "Photo folder is set as: ${YELLOW}$line${NC}"
+	  echo "$line" >> media_sources_input
 	  PHOTO_DIR_SYNC=0 # Setting variable so not to list any like folders
-	  break
-	elif [[ "$REPLY" == "n" || "$REPLY" == "N" || "$REPLY" == "no" || "$REPLY" == "No" ]]; then
-	  warn "If we cannot find it, we cannot add it! Sorry. Moving on."
-	  break
-	fi
+    else
+      info "Ignoring path $line."
+    echo
+    fi
+    done 3< "photo_sources_search"
+	break
   else
-    warn "Folder $PHOTO_DIR_CHECK does not exits OR is not reachable by user kodi_rsync.
+    warn "Folder $PHOTO_DIR_CHECK does not exist OR is not reachable by user kodi_rsync.
 Please check your $NAS_TYPE Photo folder name and kodi_rsync user permissions.
 Trying again."
     echo
   fi
-done
+done  
 else
 PHOTO_DIR_SYNC=1 # Setting variable so not to list any like folders
 info "You have chosen NOT to synchronise any Photos. Skipping this step."
