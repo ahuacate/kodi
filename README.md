@@ -195,9 +195,11 @@ fi
 The prerequisites are:
 
 - [x] External USB3 2,5" Disk Drive plugged in and powered;
-- [x] A working build of CoreElec/LibreElec with internet & LAN network access
-- [x] A running NAS with Rsync
+- [x] A working build of CoreElec/LibreElec with internet & LAN network access;
+- [x] A running NAS with Rsync;
+
 And have available or noted for the installation script:
+
 - [x] NAS folder names which you want to synchronise (i.e movies, tv or tvshows, music, photos etc). They must be exact.
 
 Next simply run our installation script. The script will prompt you for user input.
