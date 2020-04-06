@@ -188,6 +188,8 @@ ssh -q kodi_rsync@NAS_IP exit &&
 if [ "$(echo $?)" = 0 ]; then
 echo
 echo "Success. RSA key authentication is working."
+else
+echo "Fail!!!! Check your Synology Permissions"
 fi
 ```
 
