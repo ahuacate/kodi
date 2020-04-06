@@ -184,7 +184,7 @@ echo "Get ready to enter your NAS user kodi_rsync password at the prompt..." &&
 cat ~/.ssh/id_rsa.pub | ssh kodi_rsync@$NAS_IP 'cat > /var/services/homes/kodi_rsync/.ssh/authorized_keys' &&
 echo &&
 echo "Now testing your SSH RSA key connection..." &&
-ssh -q kodi_rsync@NAS_IP exit &&
+ssh -q kodi_rsync@$NAS_IP exit &&
 if [ "$(echo $?)" = 0 ]; then
 echo
 echo "Success. RSA key authentication is working."
