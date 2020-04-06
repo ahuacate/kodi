@@ -116,7 +116,7 @@ systemctl stop nmbd smbd
 umount $SELECTED_DEVICE >/dev/null
 msg "Erasing the selected disk..."
 dd if=/dev/zero of=$SELECTED_DEVICE bs=512 count=1 conv=notrunc >/dev/null
-msg "Formating the selected disk..."
+msg "Formatting the selected disk. This may take a while. Be patient..."
 yes | mkfs.ext4 -L remote $SELECTED_DEVICE
 msg "Running tune2fs to maximise storage capacity..."
 tune2fs -m 0 $SELECTED_DEVICE
