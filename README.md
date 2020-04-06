@@ -29,10 +29,10 @@ Use the Kodi TV GUI and go to the Settings Dashboard.
 
 ## 5.00 Install VNC Addon
 
-## 6.00 Make a portable CoreElec Player - No Internet Access
+## 6.00 Build a portable CoreElec Player - No Internet or LAN Access
 Make a portable CoreElec player to use in remote locations. Like homes with no internet or LAN network.
 
-This is achieved by attaching a USB3 hard disk to the CoreElec hardware and running CoreElec native RSYNC to synchronise your NAS media library to the CoreElec USB3 hard disk.
+This is achieved by attaching a USB3 hard disk to your CoreElec hardware and running CoreElec native RSYNC to synchronise your NAS media library to the attached USB3 hard disk.
 
 The prerequisites are:
 - [x] External USB3 2,5" Disk Drive
