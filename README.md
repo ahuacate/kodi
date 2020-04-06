@@ -13,6 +13,22 @@ Other Prerequisites are:
 - [x] Jellyfin LXC with Jellyfin SW installed as per [Jellyfin LXC - Ubuntu 18.04](https://github.com/ahuacate/proxmox-lxc/blob/master/README.md#30-jellyfin-lxc---ubuntu-1804).
 
 Tasks to be performed are:
+- [1.00 Setup and perform CoreElec base configuration](#100-setup-and-perform-coreelec-base-configuration)
+	- [1.01 CoreElec base settings](#101-coreelec-base-settings)
+- [2.00 CoreElec Common Settings](#200-coreelec-common-settings)
+- [3.00 Kodi Settings](#300-kodi-settings)
+- [4.00 Install Jellyfin Addon](#400-install-jellyfin-addon)
+- [5.00 Install VNC Addon](#500-install-vnc-addon)
+- [6.00 Build a portable CoreElec Player - No Internet or LAN Access](#600-build-a-portable-coreelec-player---no-internet-or-lan-access)
+	- [6.01 Prepare your NAS - Type Synology](#601-prepare-your-nas---type-synology)
+	- [6.02 Prepare your NAS - Type Proxmox Ubuntu Fileserver](#602-prepare-your-nas---type-proxmox-ubuntu-fileserver)
+	- [6.03 Prepare CoreElec for SSH Rsync to NAS](#603-prepare-coreelec-for-ssh-rsync-to-nas)
+	- [6.04 Setup Rsync on CoreElec](#604-setup-rsync-on-coreelec)
+- [00.00 Patches & Fixes](#0000-patches--fixes)
+	- [00.01 Patch for Odroid N2 CoreElec connected to LG C9 OLED - CoreELEC](#0001-patch-for-odroid-n2-coreelec-connected-to-lg-c9-oled---coreelec)
+	- [00.02 LG Patch for CoreELEC keymapping to LG C9 magic remote control - CoreELEC](#0002-lg-patch-for-coreelec-keymapping-to-lg-c9-magic-remote-control---coreelec)
+
+---
 
 ## 1.00 Setup and perform CoreElec base configuration
 Coming soon. 
