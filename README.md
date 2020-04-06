@@ -198,7 +198,7 @@ The prerequisites are:
 - [x] A working build of CoreElec/LibreElec with internet & LAN network access;
 - [x] A running NAS with Rsync;
 
-And have available or noted for the installation script:
+And have readily available (noted) for when you perform installation script task:
 
 - [x] NAS folder names which you want to synchronise (i.e movies, tv or tvshows, music, photos etc). They must be exact.
 
