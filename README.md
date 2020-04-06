@@ -28,6 +28,7 @@ Tasks to be performed are:
 	- [00.01 Patch for Odroid N2 CoreElec connected to LG C9 OLED - CoreELEC](#0001-patch-for-odroid-n2-coreelec-connected-to-lg-c9-oled---coreelec)
 	- [00.02 LG Patch for CoreELEC keymapping to LG C9 magic remote control - CoreELEC](#0002-lg-patch-for-coreelec-keymapping-to-lg-c9-magic-remote-control---coreelec)
 
+
 ---
 
 ## 1.00 Setup and perform CoreElec base configuration
@@ -126,6 +127,18 @@ Check `Enable SSH Service` and choose a non-default port. If you use the default
 | Enable Telnet service | `☐`
 | Enable SSH service | `☑`
 | Port | 22 | *Change if you want to increase security. Note new port number.*
+
+**Enable Rsync**
+
+Log in to the Synology Desktop and go to `Control Panel` > `File Services` > `rsync tab`.
+
+Check `Enable SSH Service` and choose a non-default port. If you use the default port of 22 you'll get a security warning later.
+
+| Rsync | Value | Note |
+| :---  | :---: | :--- |
+| Enable rsync service | `☑`
+| SSH encryption port | 22 | *Change if you want to increase security. Note new port number.*
+| Enable rsync account | `☐`
 
 **Enable Public Key Authentication**
 
