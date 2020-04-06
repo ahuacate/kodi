@@ -129,6 +129,7 @@ echo
 info "Success. You have created a ${YELLOW}$(df -h $SELECTED_DEVICE | awk 'FNR == 2 { print $2 }')${NC} storage disk. \nYour new is storage disk is ${YELLOW}remote${NC}."
 echo
 fi
+echo
 
 
 # Calculate available disk space for media
