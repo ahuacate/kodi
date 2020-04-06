@@ -232,6 +232,9 @@ while true
   echo "Checking if this folder exists: ${YELLOW}$TV_DIR_CHECK${NC} ..."
   if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$TV_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
     ssh kodi_rsync@$NAS_IP "find / -type d -iname "$TV_DIR_CHECK" 2>/dev/null" | egrep -v "@" > tv_sources_search
+    if [ "$(wc -l tv_sources_search | awk '{print $1}')" -gt 1 ]; then
+      warn "More than one $TV_DIR_CHECK folder exists. Please select which folder to use."
+    fi
     while read line <&3
     do
     read -p "Confirm the following path is correct for your TV Shows folder: ${YELLOW}$line${NC} [yes/no]?: " -r
@@ -267,6 +270,9 @@ while true
   echo "Checking if this folder exists: ${YELLOW}$MOVIE_DIR_CHECK${NC} ..."
   if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MOVIE_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
     ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MOVIE_DIR_CHECK" 2>/dev/null" | egrep -v "@" > movie_sources_search
+    if [ "$(wc -l movie_sources_search | awk '{print $1}')" -gt 1 ]; then
+      warn "More than one $MOVIE_DIR_CHECK folder exists. Please select which folder to use."
+    fi
     while read line <&3
     do
     read -p "Confirm the following path is correct for your Movie folder: ${YELLOW}$line${NC} [yes/no]?: " -r
@@ -302,6 +308,9 @@ while true
   echo "Checking if this folder exists: ${YELLOW}$MUSIC_DIR_CHECK${NC} ..."
   if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MUSIC_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
     ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MUSIC_DIR_CHECK" 2>/dev/null" | egrep -v "@" > music_sources_search
+    if [ "$(wc -l music_sources_search | awk '{print $1}')" -gt 1 ]; then
+      warn "More than one $MUSIC_DIR_CHECK folder exists. Please select which folder to use."
+    fi
     while read line <&3
     do
     read -p "Confirm the following path is correct for your Music folder: ${YELLOW}$line${NC} [yes/no]?: " -r
@@ -337,6 +346,9 @@ while true
   echo "Checking if this folder exists: ${YELLOW}$PHOTO_DIR_CHECK${NC} ..."
   if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$PHOTO_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
     ssh kodi_rsync@$NAS_IP "find / -type d -iname "$PHOTO_DIR_CHECK" 2>/dev/null" | egrep -v "@" > photo_sources_search
+    if [ "$(wc -l photo_sources_search | awk '{print $1}')" -gt 1 ]; then
+      warn "More than one $PHOTO_DIR_CHECK folder exists. Please select which folder to use."
+    fi
     while read line <&3
     do
     read -p "Confirm the following path is correct for your Photo folder: ${YELLOW}$line${NC} [yes/no]?: " -r
