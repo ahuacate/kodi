@@ -99,8 +99,9 @@ if [ "$(echo $FORMAT_TYPE)" == "ext3" ] || [ "$(echo $FORMAT_TYPE)" == "ext4" ];
   info "Existing disk format is okay: $FORMAT_TYPE"
 else
   echo
-  info "Your USB storage disk requires formatting to Linux ext4 filesystem"
+  info "Your USB storage disk requires formatting to Linux ext4 filesystem."
   while true; do
+        warn "All data on disk will be erased!"
 	read -p "Proceed to format the selected disk to ext4 [type y/n] : " format_run
 	echo
 	read -p "And reconfirm (again) [type y/n] : " format_run2
@@ -113,10 +114,16 @@ fi
 if [[ $format_run == "y" || $format_run == "Y" || $format_run == "yes" || $format_run == "Yes" ]]; then
 msg "Preparing to format the selected disk to ext4 filesystem..."
 systemctl stop nmbd smbd
-umount $SELECTED_DEVICE >/dev/null
+info "Checking for all partitions on disk $SELECTED_DEVICE"
+blkid $SELECTED_DEVICE* | awk '{ print $1 }' | sed 's/://' > mounted_disks
+while read line <&3
+do
+umount -l $line
+echo "unmounting $line"
+done 3< "mounted_disks"
 msg "Erasing the selected disk..."
 dd if=/dev/zero of=$SELECTED_DEVICE bs=512 count=1 conv=notrunc >/dev/null
-msg "Formatting the selected disk. This may take a while. Be patient..."
+msg "Formating the selected disk..."
 yes | mkfs.ext4 -L remote $SELECTED_DEVICE
 msg "Running tune2fs to maximise storage capacity..."
 tune2fs -m 0 $SELECTED_DEVICE
