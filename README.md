@@ -29,13 +29,15 @@ Use the Kodi TV GUI and go to the Settings Dashboard.
 
 ## 5.00 Install VNC Addon
 
-## 6.00 Make your CoreElec Player portable - No Internet Access
-This recipe is for those who want to take their CoreElec player offsite to a remote location which has no internet access or LAN network. This works by attaching a USB3 hard disk to the CoreElec player and running RSYNC to synchronise your NAS media library to the local USB3 hard disk.
+## 6.00 Make a portable CoreElec Player - No Internet Access
+Make a portable CoreElec player to use in remote locations. Like homes with no internet or LAN network.
+
+This is achieved by attaching a USB3 hard disk to the CoreElec hardware and running CoreElec native RSYNC to synchronise your NAS media library to the CoreElec USB3 hard disk.
 
 The prerequisites are:
 - [x] External USB3 2,5" Disk Drive
 - [x] A working build of CoreElec/LibreElec with network access
-- [x] A running NAS
+- [x] A running NAS with Rsync
 
 ### 6.01 Prepare your NAS - Type Synology
 **Install NANO from Synology Package Centre**
@@ -173,9 +175,28 @@ echo "Success. RSA key authentication is working."
 fi
 ```
 
-### 6.04 
+### 6.04 Setup Rsync on CoreElec
+The prerequisites are:
 
+- [x] External USB3 2,5" Disk Drive plugged in and powered;
+- [x] A working build of CoreElec/LibreElec with internet & LAN network access
+- [x] A running NAS with Rsync
+And have available or noted for the installation script:
+- [x] NAS folder names which you want to synchronise (i.e movies, tv or tvshows, music, photos etc). They must be exact.
 
+Next simply run our installation script. The script will prompt you for user input.
+
+1. Log in to your CoreElec player using SSH. Default user is `root` and password is `coreelec` (for libreelec the default password is `libreelec`):
+
+```
+ssh root@your-coreelec-IP
+```
+
+2. Run the following commands (copy & paste) in the SSH terminal. You will be prompted for user inputs to complete the script tasks.
+
+```
+wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_create_remote.sh -O coreelec_create_remote.sh; chmod +x coreelec_create_remote.sh; ./coreelec_create_remote.sh
+```
 
 #  00.00 Patches & Fixes
 Tweaks and fixes to make broken things work - sometimes.
