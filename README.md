@@ -132,7 +132,7 @@ Check `Enable SSH Service` and choose a non-default port. If you use the default
 
 Log in to the Synology Desktop and go to `Control Panel` > `File Services` > `rsync tab`.
 
-Check `Enable SSH Service` and choose a non-default port. If you use the default port of 22 you'll get a security warning later.
+Check `Enable rsync service` and choose a non-default port. If you use the default port of 22 you'll get a security warning later.
 
 | Rsync | Value | Note |
 | :---  | :---: | :--- |
