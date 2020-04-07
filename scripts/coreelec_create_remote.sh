@@ -44,7 +44,6 @@ wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_
 
 # Command to run script
 # wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_create_remote.sh -O coreelec_create_remote.sh; chmod +x coreelec_create_remote.sh; ./coreelec_create_remote.sh
-# systemctl stop nmbd smbd; umount -l /dev/sda >/dev/null; dd if=/dev/zero of=/dev/sda bs=512 count=1 conv=notrunc; mkfs.ext4 -L remote /dev/sda; mount /dev/sda /var/media/remote; systemctl restart nmbd smbd # Wipe USB disk - CHECK /dev/sdX
 
 
 ##################### SETTING USB HARD DISK ##########################
@@ -194,7 +193,7 @@ while true; do
   echo "Validating your NAS IPv4 address..."
   [ "$NAS_IP" = "$NAS_IP_CHECK" ] && [ $(ping -s 1 -c 2 "$NAS_IP" > /dev/null; echo $?) == 0 ] && break
   if [ "$NAS_IP" != "$NAS_IP_CHECK" ]; then
-echo "${RED}$NAS_IP${NC} and ${RED}$NAS_IP_CHECK${NC} DO NOT MATCH.
+echo "${RED}$NAS_IP${NC} and ${RED}$NAS_IP_CHECK${NC} DO NOT match.
 Please try again."
   elif [ $(ping -s 1 -c 2 "$NAS_IP" > /dev/null; echo $?) == 1 ]; then
 echo "NAS IPv4 address ${RED}$NAS_IP${NC} is not reachable.
@@ -205,14 +204,56 @@ done
 echo
 
 
+# Identifying your SSH Port
+msg "Identify your NAS SSH port number..."
+while true; do
+  read -p "Type your NAS SSH port number (i.e default is 22 if you have'nt changed it): " SSH_PORT
+  echo
+  read -p "Confirmation. Retype your NAS SSH port number (again): " SSH_PORT_CHECK
+  echo "Validating your SSH port number is correct..."
+  [ "$SSH_PORT" = "$SSH_PORT_CHECK" ] && [ $(ssh -q kodi_rsync@$NAS_IP -p $SSH_PORT exit > /dev/null; echo $?) == 0 ] && break
+  if [ "$SSH_PORT" != "$SSH_PORT_CHECK" ]; then
+echo "${RED}$SSH_PORT${NC} and ${RED}$SSH_PORT_CHECK${NC} port numbers DO NOT match.
+Please try again."
+  elif [ $(ssh -q kodi_rsync@$NAS_IP -p $SSH_PORT exit > /dev/null; echo $?) != 0 ]; then
+echo "SSH cannot connect on port number ${RED}$NAS_IP${NC}.
+Check your NAS SSH port number ${RED}$SSH_PORT${NC} is correct and enabled.
+Also check if any NAS firewall is blocking port $SSH_PORT.
+Please try again."
+  fi
+done
+echo
+
+
+# Identifying your Rsync SSH Port
+msg "Identify your NAS Rsync SSHport number..."
+while true; do
+  read -p "Type your NAS Rsync SSH port number (i.e default is 22 if you have'nt changed it): " RSYNC_SSH_PORT
+  echo
+  read -p "Confirmation. Retype your NAS Rsync SSH port number (again): " RSYNC_SSH_PORT_CHECK
+  echo "Validating your Rsync SSH Port number is open on your NAS..."
+  [ "$RSYNC_PORT" = "$RSYNC_PORT_CHECK" ] && [ $(nc -z "$NAS_IP" "$RSYNC_SSH_PORT" > /dev/null; echo $?) == 0 ] && break
+  if [ "$RSYNC_SSH_PORT" != "$RSYNC_SSH_PORT_CHECK" ]; then
+echo "${RED}$RSYNC_SSH_PORT${NC} and ${RED}$RSYNC_SSH_PORT_CHECK${NC} numbers NO NOT match.
+Please try again."
+  elif [ $(nc -z "$NAS_IP" "$RSYNC_SSH_PORT" > /dev/null; echo $?) == 1 ]; then
+echo "Port number ${RED}$RSYNC_SSH_PORT${NC} is NOT OPEN on your NAS. Its closed.
+Check your NAS Rsync SSH port number ${RED}$RSYNC_SSH_PORT${NC} is correct and enabled.
+Also check if any firewall is blocking port $RSYNC_SSH_PORT.
+Please try again."
+  fi
+done
+echo
+
+
 # Checking NAS Hardware Type
 msg "Checking NAS hardware type (i.e Synology, Ubuntu Server)..."
-ssh kodi_rsync@$NAS_IP "uname -a" 2>/dev/null > nas_uname.txt
+ssh kodi_rsync@$NAS_IP -p $SSH_PORT "uname -a" 2>/dev/null > nas_uname.txt
 if [ $(egrep -i "synology|diskstation" -q nas_uname.txt 2>/dev/null; echo $?) == 0 ]; then
   info "Identified a ${YELLOW}Synology Diskstation${NC}."
   NAS_TYPE="Synology"
   USER_BASE_DIR="~"
-  SOURCE_BASE_DIR="$(ssh kodi_rsync@$NAS_IP "find / -type d -name "homes" 2>/dev/null" | egrep -v "@" | sed 's/\/homes*//')"
+  SOURCE_BASE_DIR="$(ssh kodi_rsync@$NAS_IP -p $SSH_PORT "find / -type d -name "homes" 2>/dev/null" | egrep -v "@" | sed 's/\/homes*//')"
 elif [ $(egrep -i "ubuntu" -q nas_uname.txt 2>/dev/null; echo $?) == 0 ]; then
   info "Identified a ${YELLOW}Ubuntu File Server${NC}."
   NAS_TYPE="Ubuntu"
@@ -230,8 +271,8 @@ while true
   read -p "Type the $NAS_TYPE folder name which contains all your TV shows (i.e TV or TVShows): " TV_DIR_CHECK
   do
   echo "Checking if this folder exists: ${YELLOW}$TV_DIR_CHECK${NC} ..."
-  if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$TV_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
-    ssh kodi_rsync@$NAS_IP "find / -type d -iname "$TV_DIR_CHECK" 2>/dev/null" | egrep -v "@" > tv_sources_search
+  if [ $(ssh kodi_rsync@$NAS_IP -p $SSH_PORT "find / -type d -iname "$TV_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
+    ssh kodi_rsync@$NAS_IP -p $SSH_PORT "find / -type d -iname "$TV_DIR_CHECK" 2>/dev/null" | egrep -v "@" > tv_sources_search
     if [ "$(wc -l tv_sources_search | awk '{print $1}')" -gt 1 ]; then
       warn "More than one $TV_DIR_CHECK folder exists. Please select which folder to use."
     fi
@@ -268,8 +309,8 @@ while true
   read -p "Type the $NAS_TYPE folder name which contains all your Movies (i.e movies or cinema): " MOVIE_DIR_CHECK
   do
   echo "Checking if this folder exists: ${YELLOW}$MOVIE_DIR_CHECK${NC} ..."
-  if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MOVIE_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
-    ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MOVIE_DIR_CHECK" 2>/dev/null" | egrep -v "@" > movie_sources_search
+  if [ $(ssh kodi_rsync@$NAS_IP -p $SSH_PORT "find / -type d -iname "$MOVIE_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
+    ssh kodi_rsync@$NAS_IP -p $SSH_PORT "find / -type d -iname "$MOVIE_DIR_CHECK" 2>/dev/null" | egrep -v "@" > movie_sources_search
     if [ "$(wc -l movie_sources_search | awk '{print $1}')" -gt 1 ]; then
       warn "More than one $MOVIE_DIR_CHECK folder exists. Please select which folder to use."
     fi
@@ -306,8 +347,8 @@ while true
   read -p "Type the $NAS_TYPE folder name which contains all your Music (i.e music): " MUSIC_DIR_CHECK
   do
   echo "Checking if this folder exists: ${YELLOW}$MUSIC_DIR_CHECK${NC} ..."
-  if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MUSIC_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
-    ssh kodi_rsync@$NAS_IP "find / -type d -iname "$MUSIC_DIR_CHECK" 2>/dev/null" | egrep -v "@" > music_sources_search
+  if [ $(ssh kodi_rsync@$NAS_IP -p $SSH_PORT "find / -type d -iname "$MUSIC_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
+    ssh kodi_rsync@$NAS_IP -p $SSH_PORT "find / -type d -iname "$MUSIC_DIR_CHECK" 2>/dev/null" | egrep -v "@" > music_sources_search
     if [ "$(wc -l music_sources_search | awk '{print $1}')" -gt 1 ]; then
       warn "More than one $MUSIC_DIR_CHECK folder exists. Please select which folder to use."
     fi
@@ -344,8 +385,8 @@ while true
   read -p "Type the $NAS_TYPE folder name which contains all your Photos (i.e music): " PHOTO_DIR_CHECK
   do
   echo "Checking if this folder exists: ${YELLOW}$PHOTO_DIR_CHECK${NC} ..."
-  if [ $(ssh kodi_rsync@$NAS_IP "find / -type d -iname "$PHOTO_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
-    ssh kodi_rsync@$NAS_IP "find / -type d -iname "$PHOTO_DIR_CHECK" 2>/dev/null" | egrep -v "@" > photo_sources_search
+  if [ $(ssh kodi_rsync@$NAS_IP -p $SSH_PORT "find / -type d -iname "$PHOTO_DIR_CHECK" 2>/dev/null" | egrep -v "@" > /dev/null; echo $?) == 0 ]; then
+    ssh kodi_rsync@$NAS_IP -p $SSH_PORT "find / -type d -iname "$PHOTO_DIR_CHECK" 2>/dev/null" | egrep -v "@" > photo_sources_search
     if [ "$(wc -l photo_sources_search | awk '{print $1}')" -gt 1 ]; then
       warn "More than one $PHOTO_DIR_CHECK folder exists. Please select which folder to use."
     fi
@@ -381,7 +422,7 @@ msg "Identify if any other media folders exist..."
 awk '!seen[$0]++' media_sources_input > media_sources_output # Cleanup duplicates in file input_media_sources
 # Seek out containing folder name for tv and movies
 if [[ "$(cat media_sources_output | egrep -i "(tv|tvshow|tv show)" | sed 's,/*[^/]\+/*$,,')" == "$(cat media_sources_output | egrep -i "(movie|cinema)" | sed 's,/*[^/]\+/*$,,')" ]]; then
-  ssh kodi_rsync@$NAS_IP "ls -d $(cat media_sources_output | egrep -i "(tv|tvshow|tv show)" | sed 's,/*[^/]\+/*$,,')/* | egrep -i -v "@"" | egrep -i -v -f media_sources_output > media_sources_extra
+  ssh kodi_rsync@$NAS_IP -p $SSH_PORT "ls -d $(cat media_sources_output | egrep -i "(tv|tvshow|tv show)" | sed 's,/*[^/]\+/*$,,')/* | egrep -i -v "@"" | egrep -i -v -f media_sources_output > media_sources_extra
 fi 2>/dev/null
 
 if [ -f "media_sources_extra" ] && [ "$(cat media_sources_extra | sed -n '$=' $1 2>/dev/null)" -gt "0" ]; then
@@ -417,6 +458,8 @@ echo
 # Setting Variables in Script
 msg "Setting script variables..."
 sed -i 's/NAS_TYPE=.*/NAS_TYPE="'$NAS_TYPE'"/g' /storage/.config/scripts/coreelec_kodi_rsync_script.sh
+sed -i 's/SSH_PORT=.*/SSH_PORT="'$SSH_PORT'"/g' /storage/.config/scripts/coreelec_kodi_rsync_script.sh
+sed -i 's/RSYNC_SSH_PORT=.*/RSYNC_PORT="'$RSYNC_SSH_PORT'"/g' /storage/.config/scripts/coreelec_kodi_rsync_script.sh
 sed -i 's/NAS_IP=.*/NAS_IP="'$NAS_IP'"/g' /storage/.config/scripts/coreelec_kodi_rsync_script.sh
 sed -i 's/DISK_CAP_BYTES/'$DISK_CAP_BYTES'/g' /storage/.config/scripts/coreelec_kodi_rsync_script.sh
 sed -i 's|USER_BASE_DIR=.*|USER_BASE_DIR="'$USER_BASE_DIR'"|g' /storage/.config/scripts/coreelec_kodi_rsync_script.sh
