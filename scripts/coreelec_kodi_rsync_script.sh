@@ -13,6 +13,9 @@ NAS_TYPE="<insert here>"
 
 NAS_IP="<insert here>"
 
+SSH_PORT="<insert here>"
+RSYNC_SSH_PORT="<insert here>"
+
 USER_BASE_DIR="<insert here>"
 SOURCE_BASE_DIR="<insert here>"
 
@@ -44,8 +47,8 @@ if [ "$NAS_LINK" == 0 ] && [ "$NAS_PING" == 0 ] && [ "$MOUNT_CHECK" == 0 ]; then
   echo "NAS is up"
   mkdir -p "$DESTINATION_DIR"logs
   echo "==================================" >> $LOGFILE
-  ssh kodi_rsync@$NAS_IP "find $SOURCE_DIR ! -name "*.partial~" -type f -printf '%T@:%p:%s\n'" | egrep -v "@eaDir" | sort -n -r | awk -F":" '{ i+=$3; if (i<=DISK_CAP_BYTES) {print $2}}' > $INPUT_LIST
-  rsync -avuz --delete --inplace --exclude '*.partial~' --delete-excluded --log-file=$LOGFILE --files-from=$INPUT_LIST --relative kodi_rsync@$NAS_IP:$USER_BASE_DIR $DESTINATION_DIR 2> $LOGFILE_ERRORS
+  ssh kodi_rsync@$NAS_IP -p $SSH_PORT "find $SOURCE_DIR ! -name "*.partial~" -type f -printf '%T@:%p:%s\n'" | egrep -v "@eaDir" | sort -n -r | awk -F":" '{ i+=$3; if (i<=DISK_CAP_BYTES) {print $2}}' > $INPUT_LIST
+  rsync -avuh -e "ssh -p$RSYNC_SSH_PORT" --progress --delete --inplace --exclude '*.partial~' --delete-excluded --log-file=$LOGFILE --files-from=$INPUT_LIST --relative kodi_rsync@$NAS_IP:$USER_BASE_DIR $DESTINATION_DIR 2> $LOGFILE_ERRORS
   echo "==================================" >> $LOGFILE
 else
   if [ $NAS_LINK -ne 0 ];then
@@ -62,8 +65,3 @@ else
     echo "###################################" >> $LOGFILE_ERRORS
   fi
 fi
-
-
-##In Progress Work
-# ssh kodi_rsync@$NAS_IP "find $SOURCE_DIR ! -name "*.partial~" -type f -printf '%T@:%p:%s\n'" | egrep -v "@eaDir" | sort -n -r | awk -F":" '{ i+=$3; if (i<=$DISK_CAP) {print $2}}' > $INPUT_LIST
-# rsync -avuz --delete --inplace --exclude '*.partial~' --delete-excluded --log-file=$LOGFILE --files-from=/var/media/remote/logs/rsync_input.list.txt --relative kodi_rsync@$NAS_IP:$BASE_DIR $DESTINATION_DIR 2> $LOGFILE_ERRORS
