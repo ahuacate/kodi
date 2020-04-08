@@ -232,7 +232,9 @@ ssh root@your-coreelec-IP
 wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_create_remote.sh -O coreelec_create_remote.sh; chmod +x coreelec_create_remote.sh; ./coreelec_create_remote.sh
 ```
 
-3. By default the script is set to run at 01:00 hour. If you want to run the scipt type the following command in the SSH terminal:
+3. By default the script is set to run at 01:00 hour.
+
+If you want to manually run the scipt then type in a CoreElec SSH terminal:
 
 ```
 sh /storage/.config/scripts/coreelec_kodi_rsync_script.sh
