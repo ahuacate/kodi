@@ -167,7 +167,8 @@ chmod 700 /var/services/homes/kodi_rsync/.ssh &&
 touch /var/services/homes/kodi_rsync/.ssh/authorized_keys &&
 chmod 600 /var/services/homes/kodi_rsync/.ssh/authorized_keys &&
 chmod 700 /var/services/homes/kodi_rsync &&
-ln -s /volume1 /var/services/homes/kodi_rsync/volume1 &&
+SOURCE_BASE_DIR="$(find / -type d -name "homes" 2>/dev/null | egrep -v "@" | sed 's/\/homes*//')" &&
+ln -s $SOURCE_BASE_DIR /var/services/homes/kodi_rsync$SOURCE_BASE_DIR &&
 echo "Restarting SSH service..." &&
 sudo synoservicectl --reload sshd &&
 echo "Success. Finished script." &&
