@@ -48,7 +48,7 @@ if [ "$NAS_LINK" == 0 ] && [ "$NAS_PING" == 0 ] && [ "$MOUNT_CHECK" == 0 ]; then
   mkdir -p "$DESTINATION_DIR"logs
   echo "==================================" >> $LOGFILE
   ssh kodi_rsync@$NAS_IP -p $SSH_PORT "find $SOURCE_DIR ! -name "*.partial~" -type f -printf '%T@:%p:%s\n'" | egrep -v "@eaDir" | sort -n -r | awk -F":" '{ i+=$3; if (i<=DISK_CAP_BYTES) {print $2}}' > $INPUT_LIST
-  rsync -avuh -e "ssh -p$RSYNC_SSH_PORT" --progress --delete --inplace --exclude '*.partial~' --delete-excluded --log-file=$LOGFILE --files-from=$INPUT_LIST --relative kodi_rsync@$NAS_IP:$USER_BASE_DIR $DESTINATION_DIR 2> $LOGFILE_ERRORS
+  rsync -av -e "ssh -p$RSYNC_SSH_PORT" --progress  --human-readable --partial --delete --inplace --exclude '*.partial~' --delete-excluded --log-file=$LOGFILE --files-from=$INPUT_LIST --relative kodi_rsync@$NAS_IP:$USER_BASE_DIR $DESTINATION_DIR 2> $LOGFILE_ERRORS
   echo "==================================" >> $LOGFILE
 else
   if [ $NAS_LINK -ne 0 ];then
