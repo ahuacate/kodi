@@ -187,7 +187,7 @@ Here we generate a SSH RSA key and copy the public key (id_rsa.pub) to your NAS.
 ssh root@your-coreelec-IP
 ```
 
-2. Run the following commands (copy & paste) in corelec. You will need to enter your NAS user 'kodi_rsync` password to complete the task.
+2. Run the following commands (copy & paste) in yourCoreElec terminal. You will need to enter your NAS user 'kodi_rsync` password to complete the task.
 
 ```
 read -p "Please enter your NAS IPv4 address (ie 192.168.1.10) : " NAS_IP &&
@@ -226,13 +226,13 @@ Next simply run our installation script. The script will prompt you for user inp
 ssh root@your-coreelec-IP
 ```
 
-2. Run the following commands (copy & paste) in the SSH terminal. You will be prompted for user inputs to complete the script tasks.
+2. Run the following command in your CoreElec terminal. You will be prompted for user inputs to complete script tasks.
 
 ```
 wget -q https://raw.githubusercontent.com/ahuacate/kodi/master/scripts/coreelec_create_remote.sh -O coreelec_create_remote.sh; chmod +x coreelec_create_remote.sh; ./coreelec_create_remote.sh
 ```
 
-3. By default the script is set to run at 01:00 hour.
+3. By default the rsync script is set to run daily at 01:00 hour.
 
 If you want to manually run the scipt then type in a CoreElec SSH terminal:
 
