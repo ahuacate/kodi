@@ -56,6 +56,13 @@ if [ "$NAS_LINK" == 0 ] && [ "$NAS_PING" == 0 ] && [ "$MOUNT_CHECK" == 0 ]; then
   awk 'NR==FNR {exclude[$0];next} !($0 in exclude)' $INPUT_LIST $DESTINATION_DIR\logs/local_removefilelist_var01 | sed 's/^.//' | sed "s#^#$DESTINATION_DIR#" | sed 's/.*/"&"/' > $DESTINATION_DIR\logs/local_removefilelist_input
   xargs rm -rf <$DESTINATION_DIR\logs/local_removefilelist_input
   find $LOCAL_DIR depth -type d -delete 2>/dev/null
+  sleep 3
+  kodi-send --host=127.0.0.1 --action="LoadProfile(Remote_user)"
+  sleep 5
+  kodi-send --host=127.0.0.1 --action="updateLibrary(video)"
+  sleep 60
+  kodi-send --host=127.0.0.1 --action="LoadProfile(Master user)"
+  sleep 5
 else
   if [ $NAS_LINK -ne 0 ];then
     echo "############# WARNING #############" >> $LOGFILE_ERRORS
