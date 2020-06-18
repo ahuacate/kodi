@@ -52,6 +52,12 @@ if [ "$NAS_LINK" == 0 ] && [ "$NAS_PING" == 0 ] && [ "$MOUNT_CHECK" == 0 ]; then
   ssh kodi_rsync@$NAS_IP -p $SSH_PORT "find $SOURCE_DIR ! -name "*.partial~" -type f -printf '%T@:%p:%s\n'" | egrep -v "@eaDir" | sort -n -r | awk -F":" '{ i+=$3; if (i<=DISK_CAP_BYTES) {print $2}}' > $INPUT_LIST
   rsync -av -e "ssh -p$RSYNC_SSH_PORT" --progress  --human-readable --partial --delete --inplace --exclude '*.partial~' --delete-excluded --log-file=$LOGFILE --files-from=$INPUT_LIST --relative kodi_rsync@$NAS_IP:$USER_BASE_DIR $DESTINATION_DIR 2> $LOGFILE_ERRORS
   echo "==================================" >> $LOGFILE
+  find $LOCAL_DIR -type f | sed "s#$DESTINATION_DIR#/#" > $DESTINATION_DIR\logs/local_removefilelist_var01
+  awk 'NR==FNR {exclude[$0];next} !($0 in exclude)' $INPUT_LIST $DESTINATION_DIR\logs/local_removelist_var01 | sed 's/^.//' | sed "s#^#$DESTINATION_DIR#" > $DESTINATION_DIR\logs/local_removefilelist_input
+  while read line; do
+  rm "${line}"
+  done < $DESTINATION_DIR\logs/local_removefilelist_input
+  find $LOCAL_DIR depth -type d -delete 2>/dev/null
 else
   if [ $NAS_LINK -ne 0 ];then
     echo "############# WARNING #############" >> $LOGFILE_ERRORS
