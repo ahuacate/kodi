@@ -469,6 +469,16 @@ sed -i "s#LOCAL_DIR=.*#LOCAL_DIR=\"$(cat media_sources_input | sed 's/^.//' | se
 info "Rsync script variables set."
 echo
 
+# Creating Advanced Settings file
+msg "Setting cleanonupdate to run on library updates... "
+cat << EOF > /storage/.kodi/userdata/advancedsettings.xml
+<advancedsettings version="1.0">
+  <videolibrary>
+    <cleanonupdate>True</cleanonupdate>
+  </videolibrary>
+</advancedsettings>
+EOF
+echo
 
 # Setting up New Kodi Profile Names
 msg "Create a new local disk Kodi user profile... "
