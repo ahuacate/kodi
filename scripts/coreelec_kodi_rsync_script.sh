@@ -22,6 +22,8 @@ SOURCE_BASE_DIR="<insert here>"
 SOURCE_DIR="<insert here>"
 DESTINATION_DIR="/var/media/remote/"
 
+LOCAL_DIR="<insert here>"
+
 INPUT_LIST="/var/media/remote/logs/rsync_input.list.txt"
 
 LOGFILE=/var/media/remote/logs/kodi_rsync_daily.log
