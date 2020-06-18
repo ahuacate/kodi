@@ -465,7 +465,7 @@ sed -i 's/DISK_CAP_BYTES/'$DISK_CAP_BYTES'/g' /storage/.config/scripts/coreelec_
 sed -i 's|USER_BASE_DIR=.*|USER_BASE_DIR="'$USER_BASE_DIR'"|g' /storage/.config/scripts/coreelec_kodi_rsync_script.sh
 sed -i 's|SOURCE_BASE_DIR=.*|SOURCE_BASE_DIR="'$SOURCE_BASE_DIR'"|g' /storage/.config/scripts/coreelec_kodi_rsync_script.sh
 sed -i "s#SOURCE_DIR=.*#SOURCE_DIR=\"$(cat media_sources_input | awk '{print}' ORS=' ' | sed 's/ *$//')\"#g" /storage/.config/scripts/coreelec_kodi_rsync_script.sh
-sed -i "s#LOCAL_DIR=.*#LOCAL_DIR=\"$(cat media_sources_input | sed 's/^.//' | sed "s#^#$DESTINATION_DIR#" | awk '{print}' ORS=' ' | sed 's/ *$//')\"#g" /storage/.config/scripts/coreelec_kodi_rsync_script.sh
+sed -i "s#LOCAL_DIR=.*#LOCAL_DIR=\"$(cat media_sources_input | sed 's/^.//' | sed "s#^#/var/media/remote/#" | awk '{print}' ORS=' ' | sed 's/ *$//')\"#g" /storage/.config/scripts/coreelec_kodi_rsync_script.sh
 info "Rsync script variables set."
 echo
 
