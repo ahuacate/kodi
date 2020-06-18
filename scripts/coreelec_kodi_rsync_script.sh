@@ -54,9 +54,7 @@ if [ "$NAS_LINK" == 0 ] && [ "$NAS_PING" == 0 ] && [ "$MOUNT_CHECK" == 0 ]; then
   echo "==================================" >> $LOGFILE
   find $LOCAL_DIR -type f | sed "s#$DESTINATION_DIR#/#" > $DESTINATION_DIR\logs/local_removefilelist_var01
   awk 'NR==FNR {exclude[$0];next} !($0 in exclude)' $INPUT_LIST $DESTINATION_DIR\logs/local_removelist_var01 | sed 's/^.//' | sed "s#^#$DESTINATION_DIR#" > $DESTINATION_DIR\logs/local_removefilelist_input
-  while read line; do
-  rm "${line}"
-  done < $DESTINATION_DIR\logs/local_removefilelist_input
+  xargs rm -rf <$DESTINATION_DIR\logs/local_removefilelist_input
   find $LOCAL_DIR depth -type d -delete 2>/dev/null
 else
   if [ $NAS_LINK -ne 0 ];then
